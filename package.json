@@ -1,0 +1,8 @@
+{
+  "name": "bus-timeline",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/smiga287/bus-timeline.git",
+  "author": "smiga287",
+  "license": "MIT"
+}

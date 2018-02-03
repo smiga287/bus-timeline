@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "https://github.com/smiga287/bus-timeline.git",
   "author": "smiga287",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^1.0.0"
+  }
 }

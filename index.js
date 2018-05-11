@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
-const fs = require("fs");
-
+//Add a DB
 const busNum = 94;
 
 const PAGE =
@@ -12,22 +11,21 @@ const run = async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(PAGE);
-  await page.waitForSelector(TABLE);
+  await page.waitForSelector(TABLE); //Change this so it works on every bus line
 
-  // 2 -> 6
-  // 7 -> 11
-  // 12 -> 16
-  // 17 -> 21
   let data = [];
   let filter = [];
   const nextPageSelector = ".next";
   for (let i = 1; i <= 4; i++) {
     if (i > 1) {
       await page.click(nextPageSelector);
+      /* 
+        Add a _waitforSomeElement_ cause of the 94 9h bug
+        when switching pages the first hour row from other route is used
+      */
     }
     let unfiltered = await page.evaluate(async () => {
       const rows = Array.from(document.querySelectorAll(".row-hover tr"));
-      // rows.shift(); //Because of the Sledeci polazak
       return rows.map(row => {
         const children = Array.from(row.children);
         const h = children.shift().innerText;
@@ -50,4 +48,4 @@ const run = async () => {
   await browser.close();
 };
 
-run();
+run(); // Parametarize

@@ -18,35 +18,34 @@ const run = async () => {
   // 7 -> 11
   // 12 -> 16
   // 17 -> 21
-
-  const getInitData = await page.evaluate(async pageH => {
-    let rows = [];
-    for (let p = 2; p < 21; p += 5) {
-      for (let i = p; i <= p + 4; i++) {
-        const row = document.querySelector(`.row-${i}`);
-        console.log(row);
-        const row = 0;
-        rows.push(row);
-      }
-      const nextPageSelector = ".next";
-      await pageH.click(nextPageSelector);
+  let data = [];
+  let filter = [];
+  const nextPageSelector = ".next";
+  for (let i = 1; i <= 4; i++) {
+    if (i > 1) {
+      await page.click(nextPageSelector);
     }
-    return rows;
-  }, page);
-
-  const sortedData = await page.evaluate(async () => {
-    const rows = Array.from(document.querySelectorAll(".row-hover tr"));
-    rows.shift(); //Because of the Sledeci polazak
-    return rows.map(row => {
-      const children = Array.from(row.children);
-      const h = children.shift().innerText;
-      return children.map((days, idx) => {
-        const rest = days.innerText.split(" ");
-        return rest.map(m => `${h}:${m}`);
+    let unfiltered = await page.evaluate(async () => {
+      const rows = Array.from(document.querySelectorAll(".row-hover tr"));
+      // rows.shift(); //Because of the Sledeci polazak
+      return rows.map(row => {
+        const children = Array.from(row.children);
+        const h = children.shift().innerText;
+        return children.map((days, idx) => {
+          const rest = days.innerText.split(" ");
+          return rest.map(m => `${h}:${m}`);
+        });
       });
     });
-  });
-  console.log(sortedData);
+    unfiltered.map(hourArr => {
+      const hour = hourArr[0][0].substr(0, hourArr[0][0].indexOf(":"));
+      if (!filter.includes(hour)) {
+        data.push(hourArr);
+        filter.push(hour);
+      }
+    });
+  }
+  console.log(data);
 
   await browser.close();
 };

@@ -1,24 +1,17 @@
 const puppeteer = require("puppeteer");
 //Add a DB
-const busNum = 94;
 
-const PAGE =
-  "https://www.busevi.com/red-voznje/linija-94-novi-beograd-blok-45-resnik-edvarda-griga/";
+const HOMEPAGE = "https://www.busevi.com/";
 
-const TABLE = "#tablepress-584";
-
-const run = async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(PAGE);
-  await page.waitForSelector(TABLE); //Change this so it works on every bus line
-
+const agenda = async page => {
   let data = [];
   let filter = [];
   const nextPageSelector = ".next";
+  //4 replace with the number of pages
   for (let i = 1; i <= 4; i++) {
     if (i > 1) {
       await page.click(nextPageSelector);
+      await page.waitForSelector(`.row-${i + 5}`);
       /* 
         Add a _waitforSomeElement_ cause of the 94 9h bug
         when switching pages the first hour row from other route is used
@@ -43,9 +36,36 @@ const run = async () => {
       }
     });
   }
-  console.log(data);
+  return data;
+};
 
+const busLink = async (page, num) => {
+  const PANEL = ".vc_tta-panel-body";
+  const NUM_SELECTOR = ".vc_btn3";
+  await page.waitForSelector(PANEL);
+  const link = await page.evaluate(
+    async (num, selector) =>
+      Array.from(document.querySelectorAll(selector)).find(a =>
+        a.textContent.includes(`${num}`)
+      ).href,
+    num,
+    NUM_SELECTOR
+  );
+  return link;
+};
+
+const busTimeline = async (busNum, direction) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(HOMEPAGE);
+  const adress = await busLink(page, busNum);
+  await page.goto(adress);
+  // if (!direction) {
+  //   await alterDirection();
+  // }
+  const timeline = await agenda(page);
+  console.log("timeline", timeline);
   await browser.close();
 };
 
-run(); // Parametarize
+busTimeline(94, true); // Parametarize

@@ -5,8 +5,8 @@ I created this project because busevi.com is too damn slow and I wanted to save 
 ## Project plan
 
 * [x] Web-scraping algorithm
+* [x] Generalize for every bus line
 * [ ] Fix bugs
-* [ ] Generalize for every bus line
 * [ ] Create a Node.js server
 * [ ] Connect to a DB
 * [ ] Create an API

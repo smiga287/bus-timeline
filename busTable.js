@@ -8,12 +8,12 @@ const setFunctionContext = async page => {
         desc => desc.innerText == NEXT_ARRIVAL_TEXT
       );
     };
-    // ! TODO: Fuck the manual filtering. Create a Set-like structure that won't accept duplicate
+
     window.getCurrentTable = () => {
       const rows = Array.from(document.querySelectorAll(".row-hover tr"));
       rows.splice(5); // Discards cached rows from the other table
 
-      if (isNextArrival(document)) {
+      if (isNextArrival()) {
         rows.shift(); //Removes the Next arival
       }
 
@@ -37,27 +37,31 @@ const getNextButton = async (page, direction) => {
   return nextButtons[direction ? 0 : 1];
 };
 
-const nextTable = async (page, direction) => {
-  nextButton = await getNextButton(page, direction);
-  await nextButton.click();
-  await page.waitFor(4000);
-  //await page.waitForNavigation();
-};
-
 const getTableData = async (page, direction) => {
-  let tableData = [];
-  for (let i = 0; i < 2; i++) {
+  let tableData = {};
+  const TABLE_COUNT = 5;
+  for (let i = 0; i < TABLE_COUNT; i++) {
+    const nextButton = await getNextButton(page, direction);
     currentTable = await page.evaluate(() => getCurrentTable());
-    tableData.push(currentTable);
-
-    nextTable(page, direction);
+    for (const hour of currentTable) {
+      tableData = {
+        ...tableData,
+        ...hour
+      };
+    }
+    await nextButton.click();
+    await page.waitFor(500);
   }
   return tableData;
 };
 
+const selectOppositeDirection = page => {};
+
 const busTable = async (page, direction = true) => {
   setFunctionContext(page);
   const tableData = getTableData(page, direction);
+  selectOppositeDirection(page);
+  const secondWay = getTableData(page, direction);
   return tableData;
 };
 

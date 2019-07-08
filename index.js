@@ -13,8 +13,6 @@ const busTimeline = async busNum => {
   await page.goto(adress);
   const timeline = await busTable(page);
   console.log("timeline", timeline);
-  // const alterTimeline = await busTable(page, false);
-  // console.log("alterTimeline", alterTimeline);*/
   await browser.close();
 };
 

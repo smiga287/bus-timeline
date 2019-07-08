@@ -6,6 +6,6 @@
   "author": "smiga287",
   "license": "MIT",
   "dependencies": {
-    "puppeteer": "^1.0.0"
+    "puppeteer": "^1.18.1"
   }
 }

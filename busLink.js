@@ -1,14 +1,12 @@
-const busLink = async (page, num) => {
+// *  Returns a link to the page for the specified bus
+const busLink = async (page, busNum) => {
   const PANEL = ".vc_tta-panel-body";
-  const NUM_SELECTOR = ".vc_btn3";
+  const BUS_NUM_SELECTOR = ".vc_btn3";
   await page.waitForSelector(PANEL);
-  const link = await page.evaluate(
-    async (num, selector) =>
-      Array.from(document.querySelectorAll(selector)).find(
-        a => a.textContent.includes(`${num}`.toUpperCase()) // For buses like 68N / EKO 1 / E6 / 81L
-      ).href,
-    num,
-    NUM_SELECTOR
+  const link = await page.$$eval(
+    BUS_NUM_SELECTOR,
+    (links, busNum) => links.find(l => l.textContent.includes(busNum)).href,
+    busNum.toString()
   );
   return link;
 };

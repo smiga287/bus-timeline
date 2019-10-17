@@ -1,12 +1,7 @@
 # Bus timeline
 
-I created this project because busevi.com is too damn slow and I wanted to save precious time.
+A web-scraping algorithm that creates a timetable of departures of Belgrade's public transport.
 
-## Project plan
+## API
 
-* [x] Web-scraping algorithm
-* [x] Generalize for every bus line
-* [ ] Fix bugs
-* [ ] Create a Node.js server
-* [ ] Connect to a DB
-* [ ] Create an API
+- ```busTimeline(<busName>)``` - the only exported function that accepts a bus name and returns timetables for both directions  
